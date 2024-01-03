@@ -1,10 +1,13 @@
 package com.sliver.staterestore
 
+import android.os.Bundle
 import android.util.Log
 import com.sliver.staterestore.base.BaseActivity
 import com.sliver.staterestore.databinding.ActivityMainBinding
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
+    private var count = 0
+
     override fun initView() {
 
         val mainFragmentTag = MainFragment::class.java.simpleName
@@ -31,7 +34,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             Log.e(TAG, "initView: ${fragment.tag} ${fragment.hashCode()}")
         }
 
-        var count = 0
         binding.toggle.setOnClickListener {
             if (++count % 2 == 0) {
                 supportFragmentManager.beginTransaction()
@@ -49,5 +51,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         binding.recreate.setOnClickListener {
             recreate()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("count", count)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        count = savedInstanceState.getInt("count")
+        binding.count.text = "$count"
     }
 }
